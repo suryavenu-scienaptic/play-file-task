@@ -149,4 +149,4 @@ This project provides an API to generate a sequence of integers between `start` 
 ## **Usage**
 - Ensure the server is running on `localhost:9000`.
 - Use API clients like Postman or `curl` to send requests.
-- Alternatively, test the APIs using the provided `apiDemo.scala.html` template, which serves as a frontend interface accessible at `http://localhost:9000/apiDemo`.
+- Alternatively, test the APIs using the provided `apiDemo.scala.html` template, which serves as a frontend interface accessible at `http://localhost:9000/api-demo`.
