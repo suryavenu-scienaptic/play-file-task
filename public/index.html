@@ -1,0 +1,17 @@
+<script>
+    function newsCallback(news) {
+      const newsDiv = document.getElementById("news");
+      const p = document.createElement("p");
+      p.textContent = news;
+      newsDiv.prepend(p);
+    }
+
+    // Start listening to live stock news
+    const script = document.createElement("script");
+    script.src = "/streamStockNews";
+    document.body.appendChild(script);
+</script>
+
+<div id="news">
+    <h2>Live Stock News</h2>
+</div>
