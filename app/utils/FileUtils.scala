@@ -30,9 +30,14 @@ object FileUtils {
   }
 
   def clearFile(filePath: String): Try[Unit] = Try {
-    new PrintWriter(filePath).close()
+    val file = new File(filePath)
+    if (file.exists()) {
+      new PrintWriter(filePath).close()
+    } else {
+      throw new FileNotFoundException("File not found")
+    }
   } recover {
-    case _: FileNotFoundException => throw new FileNotFoundException("File not found")
+    case e: FileNotFoundException => throw new FileNotFoundException("File not found")
     case e => throw new Exception(e.getMessage)
   }
 }

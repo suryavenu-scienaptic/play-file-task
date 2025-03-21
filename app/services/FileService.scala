@@ -17,7 +17,7 @@ class FileService @Inject()(config: Configuration)(implicit ec: ExecutionContext
   def fetchFromFile: Future[List[Int]] = Future {
     FileUtils.readFromFile(filePath).get
   }
-
+  
   def deleteFromFile: Future[Unit] = Future {
     FileUtils.clearFile(filePath).get
   }
