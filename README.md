@@ -1,6 +1,6 @@
 # File Task API
 
-This project provides an API to generate a sequence of integers between `start` and `end`, save them as a comma-separated values (CSV) file, retrieve the stored data, and delete from file.
+This project provides an API to generate a sequence of integers between `start` and `end`, save them as a comma-separated values (CSV) file, retrieve the stored data, and delete the file.
 
 ## Features
 - Save a sequence of integers to a file
@@ -149,6 +149,4 @@ This project provides an API to generate a sequence of integers between `start` 
 ## **Usage**
 - Ensure the server is running on `localhost:9000`.
 - Use API clients like Postman or `curl` to send requests.
-  
-
-
+- Alternatively, test the APIs using the provided `apiDemo.scala.html` template, which serves as a frontend interface accessible at `http://localhost:9000/apiDemo`.
