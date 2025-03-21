@@ -24,8 +24,9 @@ This project provides an API to generate a sequence of integers between `start` 
     "end": 6
   }
   ```
+
 #### **Responses**
-- **200 OK:**
+- **200 OK:** Successfully saved the sequence.
   ```json
   {
     "status": "success"
@@ -71,11 +72,32 @@ This project provides an API to generate a sequence of integers between `start` 
     "message": "Start and end must be non-negative integers"
   }
   ```
-- **403 FORBIDDEN:** Permission denied
+- **403 FORBIDDEN:** Permission denied while writing to the file.
   ```json
   {
     "status": "failed",
     "message": "Permission denied"
+  }
+  ```
+- **409 CONFLICT:** File is locked or in use by another process.
+  ```json
+  {
+    "status": "failed",
+    "message": "File is locked"
+  }
+  ```
+- **413 PAYLOAD TOO LARGE:** File path exceeds the system limit.
+  ```json
+  {
+    "status": "failed",
+    "message": "File path too long"
+  }
+  ```
+- **500 INTERNAL SERVER ERROR:** Generic I/O error.
+  ```json
+  {
+    "status": "failed",
+    "message": "I/O error: [error details]"
   }
   ```
 
@@ -87,30 +109,45 @@ This project provides an API to generate a sequence of integers between `start` 
 - **Method:** `GET`
 
 #### **Responses**
-- **200 OK:** File found and contains data
+- **200 OK:** File found and contains data.
   ```json
   {
       "res": [2, 3, 4, 5, 6]
   }
   ```
-- **200 OK:** File exists but is empty
-  ```json
-  {
-      "res": []
-  }
-  ```
-- **404 NOT FOUND:** File does not exist
+- **404 NOT FOUND:** File does not exist.
   ```json
   {
       "status": "failed",
       "message": "File not found"
   }
   ```
-- **422 UNPROCESSABLE ENTITY:** Invalid file content
+- **422 UNPROCESSABLE ENTITY:** File is empty.
+  ```json
+  {
+      "status": "failed",
+      "message": "I/O error: File is empty"
+  }
+  ```
+- **422 UNPROCESSABLE ENTITY:** Invalid content found in the file.
   ```json
   {
       "status": "failed",
       "message": "Invalid file content: Non-integer value found"
+  }
+  ```
+- **403 FORBIDDEN:** Permission denied while reading the file.
+  ```json
+  {
+      "status": "failed",
+      "message": "Permission denied"
+  }
+  ```
+- **409 CONFLICT:** File is locked or in use.
+  ```json
+  {
+      "status": "failed",
+      "message": "File is locked"
   }
   ```
 
@@ -122,22 +159,46 @@ This project provides an API to generate a sequence of integers between `start` 
 - **Method:** `DELETE`
 
 #### **Responses**
-- **200 OK:** File successfully deleted
+- **200 OK:** File successfully deleted.
   ```json
   {
       "success": true
   }
   ```
+- **404 NOT FOUND:** File does not exist.
+  ```json
+  {
+      "status": "failed",
+      "message": "File not found"
+  }
+  ```
+- **403 FORBIDDEN:** Permission denied while deleting the file.
+  ```json
+  {
+      "status": "failed",
+      "message": "Permission denied"
+  }
+  ```
+- **409 CONFLICT:** File is locked or in use.
+  ```json
+  {
+      "status": "failed",
+      "message": "File is locked"
+  }
+  ```
 
-## **Edge Cases Handled**
+## **Errors Handled**
 - **Start is greater than end:** Returns `400 Bad Request`
 - **Missing required fields:** Returns `400 Bad Request`
 - **Negative integer inputs:** Returns `400 Bad Request`
 - **Invalid data types (e.g., strings instead of numbers):** Returns `400 Bad Request`
-- **File not found when retrieving data:** Returns `404 Not Found`
-- **Empty file:** Returns `200 OK` with an empty array
+- **File not found when retrieving or deleting:** Returns `404 Not Found`
+- **Empty file:** Returns `422 Unprocessable Entity`
 - **Invalid content in the file:** Returns `422 Unprocessable Entity`
-- **Permission issues when writing to the file:** Returns `403 Forbidden`
+- **Permission issues when writing, reading, or deleting:** Returns `403 Forbidden`
+- **File is locked or in use:** Returns `409 Conflict`
+- **File path exceeds the system limit:** Returns `413 Payload Too Large`
+- **Generic I/O error:** Returns `500 Internal Server Error`
 
 ## **Server Information**
 - Base URL: `http://localhost:9000`
