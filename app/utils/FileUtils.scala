@@ -8,37 +8,47 @@ object FileUtils {
 
   def writeToFile(filePath: String, data: String): Try[Unit] = Try {
     val file = new File(filePath)
-    file.getParentFile.mkdirs()
+    if (filePath.length > 260) throw new IOException("File path too long")
+    if (!file.getParentFile.exists() && !file.getParentFile.mkdirs()) throw new IOException("Failed to create parent directory")
+    if (file.exists() && !file.canWrite) throw new IOException("File is locked or read-only")
     val writer = new PrintWriter(file)
     try writer.write(data) finally writer.close()
-  } recover {
-    case e: IOException => throw new IOException("Permission denied")
-    case e => throw new Exception(e.getMessage)
+  } recoverWith {
+    case e: IOException => Failure(new IOException(s"I/O error: ${e.getMessage}"))
+    case e => Failure(new Exception(s"Failed to write to file: ${e.getMessage}"))
   }
 
   def readFromFile(filePath: String): Try[List[Int]] = Try {
-    val source = Source.fromFile(filePath)
+    val file = new File(filePath)
+    if (!file.exists()) throw new FileNotFoundException("File not found")
+    if (file.length() == 0) throw new IOException("File is empty")
+    if (!file.canRead) throw new IOException("File is locked or inaccessible")
+    val source = Source.fromFile(file)
     try {
       val content = source.mkString.trim
-      if (content.isEmpty) List.empty[Int]
-      else content.split(",").map(_.toInt).toList
+      if (content.isEmpty) throw new IOException("File is empty")
+      content.split(",").map { num =>
+        try num.toInt
+        catch {
+          case _: NumberFormatException => throw new NumberFormatException(s"Invalid integer: $num")
+        }
+      }.toList
     } finally source.close()
-  } recover {
-    case _: FileNotFoundException => throw new FileNotFoundException("File not found")
-    case _: NumberFormatException => throw new NumberFormatException("Invalid file content: Non-integer value found")
-    case e => throw new Exception(e.getMessage)
+  } recoverWith {
+    case e: FileNotFoundException => Failure(new FileNotFoundException("File not found"))
+    case e: NumberFormatException => Failure(new NumberFormatException("Invalid file content: Non-integer value found"))
+    case e: IOException => Failure(new IOException(s"I/O error: ${e.getMessage}"))
+    case e => Failure(new Exception(s"Failed to read from file: ${e.getMessage}"))
   }
 
   def clearFile(filePath: String): Try[Unit] = Try {
     val file = new File(filePath)
-    if (file.exists()) {
-      new PrintWriter(filePath).close()
-    } else {
-      throw new FileNotFoundException("File not found")
-    }
-  } recover {
-    case e: FileNotFoundException => throw new FileNotFoundException("File not found")
-    case e => throw new Exception(e.getMessage)
+    if (!file.exists()) throw new FileNotFoundException("File not found")
+    if (!file.canWrite) throw new IOException("File is locked or read-only")
+    new PrintWriter(filePath).close()
+  } recoverWith {
+    case e: FileNotFoundException => Failure(new FileNotFoundException("File not found"))
+    case e: IOException => Failure(new IOException("Permission denied or I/O error"))
+    case e => Failure(new Exception(s"Failed to clear file: ${e.getMessage}"))
   }
 }
-

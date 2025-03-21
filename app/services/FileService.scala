@@ -1,9 +1,10 @@
 package services
 
-import javax.inject._
 import play.api.Configuration
 import utils.FileUtils
-import scala.concurrent.{Future, ExecutionContext}
+
+import javax.inject._
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class FileService @Inject()(config: Configuration)(implicit ec: ExecutionContext) {
@@ -17,9 +18,8 @@ class FileService @Inject()(config: Configuration)(implicit ec: ExecutionContext
   def fetchFromFile: Future[List[Int]] = Future {
     FileUtils.readFromFile(filePath).get
   }
-  
+
   def deleteFromFile: Future[Unit] = Future {
     FileUtils.clearFile(filePath).get
   }
 }
-
