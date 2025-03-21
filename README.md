@@ -72,6 +72,20 @@ This project provides an API to generate a sequence of integers between `start` 
     "message": "Start and end must be non-negative integers"
   }
   ```
+- **400 BAD REQUEST:** Range exceeds the maximum limit
+  ```json
+  {
+    "status": "failed",
+    "message": "Range too large: Max allowed range is 1000"
+  }
+  ```
+- **400 BAD REQUEST:** Start and end values are identical
+  ```json
+  {
+    "status": "failed",
+    "message": "Start and end cannot be the same"
+  }
+  ```
 - **403 FORBIDDEN:** Permission denied while writing to the file.
   ```json
   {
