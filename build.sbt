@@ -1,19 +1,19 @@
-name := """play-task"""
+name := "play-task"
 organization := "com.example"
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
-
 scalaVersion := "2.12.10"
 
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
+// Dependencies
 libraryDependencies ++= Seq(
   guice,
-  "com.typesafe.akka" %% "akka-stream" % "2.6.3"
+  "org.webjars" % "swagger-ui" % "3.43.0",
+  "io.swagger" %% "swagger-play2" % "1.7.1"
 )
-// Adds additional packages into Twirl
-//TwirlKeys.templateImports += "com.example.controllers._"
 
-// Adds additional packages into conf/routes
+// Uncomment if you need additional imports
+// TwirlKeys.templateImports += "com.example.controllers._"
 // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
