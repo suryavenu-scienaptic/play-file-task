@@ -21,7 +21,7 @@ class FileController @Inject()(cc: ControllerComponents, fileService: FileServic
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "File saved successfully"),
     new ApiResponse(code = 400, message = "Validation failed"),
-    new ApiResponse(code = 500, message = "Internal server error")
+    new ApiResponse(code = 500, message = "Internal server error", response = classOf[FailureResponse])
   ))
   @ApiImplicitParams(Array(
     new ApiImplicitParam(value = "File request payload", required = true, dataType = "models.FileRequest", paramType = "body")
@@ -48,7 +48,7 @@ class FileController @Inject()(cc: ControllerComponents, fileService: FileServic
   @ApiOperation(value = "Fetch data from file", response = classOf[FetchFromFileResponse], httpMethod = "GET")
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "File data retrieved successfully"),
-    new ApiResponse(code = 500, message = "Internal server error")
+    new ApiResponse(code = 500, message = "Internal server error", response = classOf[FailureResponse])
   ))
   def fetchFromFile = Action.async {
     fileService.fetchFromFile.map { data =>
@@ -59,7 +59,7 @@ class FileController @Inject()(cc: ControllerComponents, fileService: FileServic
   @ApiOperation(value = "Delete file", response = classOf[DeleteFromFileResponse], httpMethod = "DELETE")
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "File deleted successfully"),
-    new ApiResponse(code = 500, message = "Internal server error")
+    new ApiResponse(code = 500, message = "Internal server error", response = classOf[FailureResponse])
   ))
   def deleteFromFile = Action.async {
     fileService.deleteFromFile.map { _ =>
