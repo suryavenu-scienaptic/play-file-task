@@ -1,6 +1,6 @@
 # File Task API
 
-This project provides an API to generate a sequence of integers between `start` and `end`, save them as a comma-separated values (CSV) file, retrieve the stored data, and delete the file.
+This project provides an API to generate a sequence of integers between `start` and `end`, save them as a comma-separated values (CSV) file, retrieve the stored data, and delete the contents of the file.
 
 ## Features
 - Save a sequence of integers to a file
