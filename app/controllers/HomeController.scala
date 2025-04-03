@@ -8,9 +8,10 @@ import play.api.libs.json.Json
 
 @Singleton
 class HomeController @Inject()(
-                                val controllerComponents: ControllerComponents,
-                                fileService: FileService
-                              )(implicit ec: ExecutionContext) extends BaseController {
+    val controllerComponents: ControllerComponents,
+    fileService: FileService
+)(implicit ec: ExecutionContext)
+    extends BaseController {
 
   def index() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.apiDemo())
