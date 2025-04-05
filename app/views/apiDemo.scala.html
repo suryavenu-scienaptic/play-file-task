@@ -1,217 +1,240 @@
-@()
+@()(implicit request: RequestHeader)
+@import helper._
 
 @main("API Demo Page") {
+
+<script>
+    const csrfToken = '@CSRF.getToken.value';
+</script>
+
 <style>
     body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
     }
 
     h1 {
-      text-align: center;
-      color: #007bff;
-      margin-top: 20px;
-      font-size: 2.5rem;
+        text-align: center;
+        color: #007bff;
+        margin-top: 20px;
+        font-size: 2.5rem;
     }
 
     .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
     }
 
     .section {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-      padding: 20px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        padding: 25px;
     }
 
-    .section:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
     }
 
-    h2 {
-      color: #007bff;
-      margin-bottom: 15px;
-      font-size: 1.5rem;
+    .section-header h2 {
+        margin: 0;
+        color: #333;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 20px;
     }
 
-    label {
-      font-weight: bold;
-      color: #555;
+    .form-group {
+        display: flex;
+        flex-direction: column;
     }
 
-    input[type="number"] {
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 1rem;
-      transition: border-color 0.3s ease;
+    .form-group label {
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #333;
     }
 
-    input[type="number"]:focus {
-      border-color: #007bff;
-      outline: none;
+    .form-group input {
+        padding: 10px 12px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        transition: border 0.2s ease;
     }
 
-    button {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
+    .form-group input:focus {
+        border-color: #007bff;
+        outline: none;
     }
 
-    button:hover {
-      background-color: #0056b3;
+    .form-actions {
+        text-align: right;
+    }
+
+    .submit-btn, .action-btn {
+        padding: 10px 24px;
+        background-color: #007bff;
+        color: white;
+        font-size: 1rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .submit-btn:hover,
+    .action-btn:hover {
+        background-color: #0056b3;
     }
 
     .response {
-      margin-top: 15px;
-      padding: 15px;
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 0.9rem;
-      overflow-x: auto;
+        clear: both;
+        margin-top: 20px;
+        font-family: monospace;
+        font-size: 0.9rem;
+        white-space: pre-wrap;
     }
 
     .success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
+        background-color: #d4edda;
+        padding: 10px;
+        border-left: 5px solid green;
+        border-radius: 4px;
     }
 
     .error {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-
-    pre {
-      margin: 0;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 30px;
-      color: #777;
-      font-size: 0.9rem;
+        background-color: #f8d7da;
+        padding: 10px;
+        border-left: 5px solid red;
+        border-radius: 4px;
     }
 </style>
 
 <div class="container">
-    <h1>File Task API Demo</h1>
+    <h1>File API Demo</h1>
 
+    <!-- Save to File Section -->
     <div class="section">
-        <h2>Save to File</h2>
+        <div class="section-header">
+            <h2>Save to File</h2>
+        </div>
         <form id="saveForm">
-            <label for="start">Start:</label>
-            <input type="number" id="start" name="start" required>
-            <label for="end">End:</label>
-            <input type="number" id="end" name="end" required>
-            <button type="submit">Save to File</button>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="start">Start</label>
+                    <input type="number" id="start" name="start" required placeholder="Enter start value" />
+                </div>
+                <div class="form-group">
+                    <label for="end">End</label>
+                    <input type="number" id="end" name="end" required placeholder="Enter end value" />
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Save to File</button>
+            </div>
         </form>
         <div id="saveResult" class="response"></div>
     </div>
 
+    <!-- Fetch from File Section -->
     <div class="section">
-        <h2>Fetch from File</h2>
-        <button onclick="fetchFromFile()">Fetch from File</button>
+        <div class="section-header">
+            <h2>Fetch from File</h2>
+            <button id="fetchButton" class="action-btn">Fetch</button>
+        </div>
         <div id="fetchResult" class="response"></div>
     </div>
 
+    <!-- Delete from File Section -->
     <div class="section">
-        <h2>Delete from File</h2>
-        <button onclick="deleteFromFile()">Delete from File</button>
+        <div class="section-header">
+            <h2>Delete from File</h2>
+            <button id="deleteButton" class="action-btn">Delete</button>
+        </div>
         <div id="deleteResult" class="response"></div>
-    </div>
-
-    <div class="footer">
-        <p>Play Framework API Demo</p>
     </div>
 </div>
 
 <script>
-    document.getElementById('saveForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent default form submission
+    document.getElementById('saveForm').addEventListener('submit', function (e) {
+        e.preventDefault();
 
-      const start = document.getElementById('start').value;
-      const end = document.getElementById('end').value;
+        const start = parseInt(document.getElementById('start').value);
+        const end = parseInt(document.getElementById('end').value);
 
-      fetch('@routes.FileController.saveToFile', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ start: parseInt(start), end: parseInt(end) })
-      })
-      .then(response => response.json())
-      .then(data => {
-        const resultDiv = document.getElementById('saveResult');
-        resultDiv.textContent = JSON.stringify(data, null, 2);
-        resultDiv.className = data.status === "failed" ? 'response error' : 'response success';
-      })
-      .catch(error => {
-        const resultDiv = document.getElementById('saveResult');
-        resultDiv.textContent = 'Error: ' + error.message;
-        resultDiv.className = 'response error';
-      });
+        fetch('@routes.FileController.saveToFile().url', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Csrf-Token': csrfToken
+            },
+            body: JSON.stringify({ start, end })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const result = document.getElementById('saveResult');
+            result.className = 'response ' + (data.status === 'success' ? 'success' : 'error');
+            result.textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+            const result = document.getElementById('saveResult');
+            result.className = 'response error';
+            result.textContent = 'Error: ' + error.message;
+        });
     });
 
-    function fetchFromFile() {
-      fetch('@routes.FileController.fetchFromFile', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        const resultDiv = document.getElementById('fetchResult');
-        resultDiv.textContent = JSON.stringify(data, null, 2);
-        resultDiv.className = data.status === "failed" ? 'response error' : 'response success';
-      })
-      .catch(error => {
-        const resultDiv = document.getElementById('fetchResult');
-        resultDiv.textContent = 'Error: ' + error.message;
-        resultDiv.className = 'response error';
-      });
-    }
+    document.getElementById('fetchButton').addEventListener('click', function () {
+        fetch('@routes.FileController.fetchFromFile().url', {
+            method: 'GET',
+            headers: {
+                'Csrf-Token': csrfToken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const result = document.getElementById('fetchResult');
+            result.className = 'response success';
+            result.textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+            const result = document.getElementById('fetchResult');
+            result.className = 'response error';
+            result.textContent = 'Error: ' + error.message;
+        });
+    });
 
-    function deleteFromFile() {
-      fetch('@routes.FileController.deleteFromFile', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        const resultDiv = document.getElementById('deleteResult');
-        resultDiv.textContent = JSON.stringify(data, null, 2);
-        resultDiv.className = data.status === "failed" ? 'response error' : 'response success';
-      })
-      .catch(error => {
-        const resultDiv = document.getElementById('deleteResult');
-        resultDiv.textContent = 'Error: ' + error.message;
-        resultDiv.className = 'response error';
-      });
-    }
+    document.getElementById('deleteButton').addEventListener('click', function () {
+        fetch('@routes.FileController.deleteFromFile().url', {
+            method: 'DELETE',
+            headers: {
+                'Csrf-Token': csrfToken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const result = document.getElementById('deleteResult');
+            result.className = 'response success';
+            result.textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+            const result = document.getElementById('deleteResult');
+            result.className = 'response error';
+            result.textContent = 'Error: ' + error.message;
+        });
+    });
 </script>
+
 }

@@ -13,9 +13,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 #Swagger
 GET     /swagger.json               controllers.ApiHelpController.getResources
 GET     /docs/swagger-ui/*file      controllers.Assets.at(path:String="/public/lib/swagger-ui",file:String)
-#play-file-task
-+ nocsrf
+# play-file-task
 POST    /file               controllers.FileController.saveToFile
 GET     /file               controllers.FileController.fetchFromFile
-+ nocsrf
 DELETE  /file               controllers.FileController.deleteFromFile
